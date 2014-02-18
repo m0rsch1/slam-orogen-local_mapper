@@ -1,0 +1,57 @@
+#! /usr/bin/env ruby
+#library for displaying data
+require 'vizkit'
+require 'readline'
+require 'eigen'
+require 'rock/bundle'
+
+if !ARGV[0]  then 
+    puts "usage: replay.rb log_dir"
+    exit
+end
+
+
+#load log file 
+log = Orocos::Log::Replay.open(ARGV[0])
+Orocos::CORBA::max_message_size = 100000000
+
+log.track(true) 
+# log.local_planner.track(false) 
+# log.velodyne_slam.track(false) 
+log.transformer_broadcaster.track(false) 
+log.transformer_broadcaster.rename('foo')
+log.name_service.deregister 'transformer_broadcaster'
+#log.name_service.deregister 'local_planner'
+
+Bundles.initialize
+Bundles.transformer.load_conf(Bundles.find_file('config', 'transforms_scripts.rb'))
+
+Bundles.run 'local_mapper::Task' => 'local_mapper', :valgrind => false, :output => nil do |p|
+    
+    odometry = Orocos.name_service.get 'odometry'
+    hokuyo_front = Orocos::TaskContext.get('laser_filter_front')
+    hokuyo_back = Orocos::TaskContext.get('laser_filter_back')
+    local_mapper = Bundles::get 'local_mapper'
+    velodyne = Bundles::get 'velodyne'
+
+    hokuyo_front.filtered_scans.connect_to(local_mapper.scan_samples, :type => :buffer, :size => 100)
+    hokuyo_back.filtered_scans.connect_to(local_mapper.scan_samples_back, :type => :buffer, :size => 100)
+    velodyne.laser_scans.connect_to(local_mapper.velodyne_scans, :type => :buffer, :size => 100)
+    #odometry.odometry_samples.connect_to(local_planner.odometry_samples, :type => :buffer, :size => 100)
+    
+    local_mapper.apply_conf(['default'])
+    
+    
+    Bundles.transformer.setup( local_mapper )
+    local_mapper.configure()
+    local_mapper.start()
+
+    Vizkit.control log
+
+    
+    Vizkit.display odometry.odometry_samples, :widget => Vizkit.default_loader.RigidBodyStateVisualization
+    Vizkit.display local_mapper.map
+
+    Vizkit.exec()
+end
+

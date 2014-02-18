@@ -1,0 +1,15 @@
+<package>
+  <description brief="A simple mapper that accumulates scans in a given position frame">
+  
+  </description>
+  <author>Janosch Machowinski/janosch.machowinski@dfki.de</author>
+  <license></license>
+  <url>http://</url>
+  <logo>http://</logo>
+  <depend package="base/cmake" />
+  <depend package="base/orogen/types" />
+  <depend package="slam/orogen/envire" />
+  <depend package="drivers/orogen/velodyne_lidar" />
+  <depend package="drivers/orogen/transformer" />
+
+</package>

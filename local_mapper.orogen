@@ -1,0 +1,71 @@
+name "local_mapper"
+
+using_library 'velodyne_lidar'
+using_library 'envire'
+import_types_from "base"
+import_types_from "envire"
+import_types_from "velodyne_lidar/MultilevelLaserScan.h"
+
+task_context "Task" do
+    needs_configuration
+
+    input_port("scan_samples", "base/samples/LaserScan").
+	needs_reliable_connection.
+        doc "LaserScann of front Scanner"
+
+    input_port("scan_samples_back", "base/samples/LaserScan").
+	needs_reliable_connection.
+        doc "Optional LaserScann of rear scanner"
+
+    input_port("velodyne_scans", "velodyne_lidar::MultilevelLaserScan").
+	needs_reliable_connection.
+        doc 'Optional velodyne scans'
+
+    output_port('map', ro_ptr('std/vector</envire/BinaryEvent>')).
+        doc('Mls map of the environment').
+        keep_last_written_value(false)
+
+    transformer do
+	transformation("body_center", "odometry")
+	transformation("laser", "body_center")
+        transformation("laser_back", "body_center")
+        transformation("velodyne", "body_center")
+	align_port('scan_samples', 0.025)
+	align_port('scan_samples_back', 0.025)
+	align_port('velodyne_scans', 0.08)
+
+	max_latency(0.1)
+    end
+
+    property('map_size', 'double', 3.0).
+        doc 'The size of the local map'
+    property('boundary_size', 'double', 1.0).
+        doc 'The size of the boundary of the map. If the Robot enters the boundary the map will be moved'
+    property('map_resolution', 'double', 0.1).
+        doc 'The size of each grid cell'
+
+    property('scan_angle_change_trigger', 'double', 0.3).
+        doc 'If the angle from any Scanner to the robot center changes more that this value a new map will be written to the output port'
+
+    property('robot_angle_change_trigger', 'double', 0.3).
+        doc 'If the angle of the robot center changes more that this value a new map will be written to the output port'
+
+    property('robot_translation_trigger', 'double', 0.05).
+        doc 'If the robot moves more that this value a new map will be written to the output port'
+
+    property('height_to_ground', 'double', 0).
+        doc 'the distance between the body_center frame and the ground'
+
+    ## velodyne filter parameter
+    property('velodyne_maximum_angle_to_neighbor', 'double', 2.53).
+        doc('valid neigbors have an angle not greater than this value.').
+        doc('the angle is always defined from the origin to the more distant point.')
+    property('velodyne_minimum_valid_neighbors', 'int', 2).
+        doc('minimum amount of valid neigbors')
+        
+
+    needs_configuration
+    port_driven
+    worstcase_processing_time 2.0
+end
+
