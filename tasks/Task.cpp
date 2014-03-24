@@ -10,7 +10,7 @@ using namespace local_mapper;
 using namespace Eigen;
 
 
-Task::RangeDataInput::RangeDataInput(transformer::Transformation &rangeData2Body, Task *task) : rangeData2Body(rangeData2Body), task(task)
+Task::RangeDataInput::RangeDataInput(transformer::Transformation &rangeData2Body, Task *task) : rangeData2Body(rangeData2Body), lastRangeData2Body(Eigen::Affine3d::Identity()), task(task)
 {
 }
 
