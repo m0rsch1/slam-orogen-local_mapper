@@ -207,7 +207,7 @@ void MapGenerator::computeNewMap()
 void MapGenerator::clearMap()
 {
     lastHeight = 0.0;
-    mlsGridPos->setTransform(envire::Transform());
+    mlsGridPos->setTransform(Eigen::Affine3d::Identity());
     mlsGrid->clear();
 }
 
