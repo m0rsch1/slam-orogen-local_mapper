@@ -62,6 +62,10 @@ public:
         return environment;
     }
     
+    void clearEnvForSending();
+    void restoreEnvAfterSending();
+    
+    
 private:
         
 //     /**

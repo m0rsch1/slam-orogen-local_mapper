@@ -227,10 +227,11 @@ void Task::updateHook()
     
     if(gotNewMap || distanceBodyToLastBody > robotDistanceTrigger || robotAngleChange > robotAngleTrigger)
     {
+        mapGenerator->clearEnvForSending();
         envire::OrocosEmitter emitter(&(mapGenerator->getEnvironment()), _map);
         emitter.setTime(lastScanTime);
         emitter.flush();
-        
+        mapGenerator->restoreEnvAfterSending();
         std::cout << "Robot moved, flushing map" << std::endl;
         
         lastMapWriteTime = lastScanTime;

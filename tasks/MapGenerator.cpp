@@ -211,6 +211,16 @@ void MapGenerator::clearMap()
     mlsGrid->clear();
 }
 
+void MapGenerator::clearEnvForSending()
+{
+    environment.detachItem(projOp);
+}
+
+void MapGenerator::restoreEnvAfterSending()
+{
+    environment.attachItem(projOp);
+    projOp->setOutput(mlsGrid);
+}
 
 
 
