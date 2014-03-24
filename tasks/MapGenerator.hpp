@@ -78,6 +78,8 @@ private:
     envire::Environment environment;
     envire::MLSProjection *projOp;
 
+    envire::EnvironmentItem::Ptr projOpStore;
+    
     double boundarySize;
     double mapSize;
     double lastHeight;

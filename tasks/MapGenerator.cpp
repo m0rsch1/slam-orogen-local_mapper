@@ -213,7 +213,7 @@ void MapGenerator::clearMap()
 
 void MapGenerator::clearEnvForSending()
 {
-    environment.detachItem(projOp);
+    projOpStore = environment.detachItem(projOp);
 }
 
 void MapGenerator::restoreEnvAfterSending()
