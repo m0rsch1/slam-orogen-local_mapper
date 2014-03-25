@@ -11,5 +11,6 @@
   <depend package="slam/orogen/envire" />
   <depend package="drivers/orogen/velodyne_lidar" />
   <depend package="drivers/orogen/transformer" />
+  <tags>stable</tags>
 
 </package>
