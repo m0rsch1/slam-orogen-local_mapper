@@ -64,6 +64,8 @@ bool MapGenerator::getZCorrection(Eigen::Affine3d& body2Odo)
         return false;
     }
 
+    return true;
+    
     //search for best height.
     //TODO find good stddev
     SurfacePatch *closestPatch = mlsGrid->get(pInGrid, lastHeight, 0.1);
