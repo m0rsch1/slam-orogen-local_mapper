@@ -84,6 +84,8 @@ namespace local_mapper {
          */
         ~Task();
 
+        virtual bool markRectInMap(double width, double height, const base::samples::RigidBodyState& pose, double offset);
+
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the
          * component will stay in PreOperational. Otherwise, it goes into

@@ -25,6 +25,13 @@ task_context "Task" do
         doc('Mls map of the environment').
         keep_last_written_value(false)
 
+    operation('markRectInMap').
+        argument('width', 'double', 'width of the rectangle').
+        argument('height', 'double', 'height of the rectangle').
+        argument('pose', 'base::samples::RigidBodyState', 'Pose of the rectangle center').
+        argument('offset', 'double', 'offset in height between the pose and the rectange height').
+    returns('bool')
+
     transformer do
 	transformation("body_center", "odometry")
 	transformation("laser", "body_center")

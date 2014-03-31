@@ -66,6 +66,31 @@ Task::~Task()
     
 }
 
+bool Task::markRectInMap(double width, double height, ::base::samples::RigidBodyState const & pose, double offset)
+{
+    if(!mapGenerator)
+        return false;
+    
+    //generate fake point cloud
+    envire::Pointcloud *pc = new envire::Pointcloud();
+    double delta = _map_resolution.get() / 4;
+    Affine3d pointToMap(pose.getTransform());
+    
+    for(double y = -width/2.0; y < width/2.0; y += delta)
+    {
+        for(double x = -height/2.0; x < height/2.0; x += delta)
+        {
+            Vector3d p = pointToMap * Vector3d(x, y, offset);
+            pc->vertices.push_back(p);
+        }
+    }
+    
+    mapGenerator->addPointCloud(pc);
+    gotNewMap = true;
+
+    return true;
+}
+
 void Task::scan_samplesTransformerCallback(const base::Time &ts, const ::base::samples::LaserScan &scan_samples_sample)
 {
     frontInput.addLaserScan(ts, scan_samples_sample);
