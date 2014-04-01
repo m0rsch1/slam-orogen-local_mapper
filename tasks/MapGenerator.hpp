@@ -20,6 +20,13 @@ public:
     double getHeightToGround() const;
                 
     bool getZCorrection(Eigen::Affine3d& body2Map);
+
+    /**
+     * @brief set how much old measurements are taken into account
+     * A factor of 1.0 treats all values the same, anything below 1.0
+     * will let the weight of old values diminish exponentially.
+     */
+    void setHistoryScaling( float factor );
         
     /**
     * Adds a vector of range points to the map
@@ -85,6 +92,9 @@ private:
     double lastHeight;
     ///height from bodyFrame to ground
     double heightToGround;
+
+    /// scale factor for patch history
+    float scaleFactor;
 };
 
 #endif // MAPGENERATOR_H

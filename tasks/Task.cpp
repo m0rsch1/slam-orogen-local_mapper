@@ -221,6 +221,7 @@ bool Task::configureHook()
     
     mapGenerator = new MapGenerator(mapSize, mapResolution);
     mapGenerator->setBoundarySize(boundarySize);
+    mapGenerator->setHistoryScaling(_history_scale_factor.get());
     
     return true;
 }

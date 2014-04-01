@@ -51,6 +51,9 @@ task_context "Task" do
     property('map_resolution', 'double', 0.1).
         doc 'The size of each grid cell'
 
+    property('history_scale_factor', 'double', 1.0).
+        doc 'Scale factor between 1.0 and 0.0 of how much old values are valued.'
+
     property('scan_angle_change_trigger', 'double', 0.3).
         doc 'If the angle from any Scanner to the robot center changes more that this value a new map will be written to the output port'
 

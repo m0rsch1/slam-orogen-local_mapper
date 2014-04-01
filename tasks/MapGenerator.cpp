@@ -11,14 +11,17 @@ using namespace envire;
 
 
 MapGenerator::MapGenerator(double size, double resolution)
+    : scaleFactor( 1.0 )
 {
     lastHeight = 0.0;
     heightToGround = 0.0;
     size_t gridCells = ceil(size / resolution);
     mlsGrid = new MLSGrid(gridCells, gridCells, resolution, resolution, -size/2.0 , -size/2.0);
     std::cout << "Gridcells is " << gridCells << " size is " << size << " res is " << resolution << " map owon size " << mlsGrid->getSizeX() << std::endl;
+    mlsGrid->getConfig().updateModel = MLSConfiguration::SLOPE;
     mlsGridPos = new FrameNode();
     projOp = new MLSProjection();
+    projOp->useUncertainty( false );
     
     environment.attachItem(mlsGrid);
     environment.attachItem(mlsGridPos);
@@ -36,7 +39,11 @@ MapGenerator::~MapGenerator()
     environment.detachItem(mlsGridPos);
     environment.detachItem(projOp);
 }
-
+ 
+void MapGenerator::setHistoryScaling( float factor )
+{
+    scaleFactor = factor;
+}
 
 void MapGenerator::setHeightToGround(double value)
 {
@@ -96,6 +103,8 @@ void MapGenerator::addPointCloud(Pointcloud *cloud)
     
     projOp->setInput(cloud);
     projOp->updateAll();
+
+    mlsGrid->scalePatchWeights( scaleFactor );
     
     projOp->removeInput(cloud);
     environment.detachFrameNode(cloud, environment.getRootNode());
