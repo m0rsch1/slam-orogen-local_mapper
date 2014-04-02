@@ -258,7 +258,7 @@ void Task::updateHook()
         emitter.setTime(lastScanTime);
         emitter.flush();
         mapGenerator->restoreEnvAfterSending();
-        std::cout << "Robot moved, flushing map" << std::endl;
+//         std::cout << "Robot moved, flushing map" << std::endl;
         
         lastMapWriteTime = lastScanTime;
         lastBodyCenter2Odo = curBodyCenter2Odo;
