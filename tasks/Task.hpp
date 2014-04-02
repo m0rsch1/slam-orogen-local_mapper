@@ -33,6 +33,7 @@ namespace local_mapper {
         
         class RangeDataInput {
         public:
+            EIGEN_MAKE_ALIGNED_OPERATOR_NEW
             RangeDataInput(transformer::Transformation &rangeData2Body, Task *task);
             void addLaserScan(const base::Time& ts, const base::samples::LaserScan& scan_reading); 
         private:
@@ -67,6 +68,8 @@ namespace local_mapper {
 
         MapGenerator *mapGenerator;
     public:
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
         /** TaskContext constructor for Task
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
