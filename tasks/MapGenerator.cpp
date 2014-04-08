@@ -153,8 +153,8 @@ bool MapGenerator::addLaserScan(const base::samples::LaserScan& ls, const Eigen:
 
 bool MapGenerator::moveMapIfRobotNearBoundary(const Eigen::Vector3d& robotPosition_world)
 {
-    const double widthHalf = mlsGrid->getSizeX() / 2.0;
-    const double heightHalf = mlsGrid->getSizeY() / 2.0;
+    const double sizeXHalf = mlsGrid->getSizeX() / 2.0;
+    const double sizeYHalf = mlsGrid->getSizeY() / 2.0;
 
     GridBase::Position posInGrid;
     if(!mlsGrid->toGrid(robotPosition_world, posInGrid.x, posInGrid.y, environment.getRootNode()))
@@ -177,19 +177,20 @@ bool MapGenerator::moveMapIfRobotNearBoundary(const Eigen::Vector3d& robotPositi
     
 //     std::cout << "Center pos is " << gridCenter_w.transpose() << " robot pos is " << robotPosition_world.transpose() << " diff is " << diffCenterRobot_w.transpose() << std::endl;
     
-    if(fabs(diffCenterRobot_w.x()) > (widthHalf - boundarySize) || fabs(diffCenterRobot_w.y()) > (heightHalf - boundarySize)) 
+    if(fabs(diffCenterRobot_w.x()) > (sizeXHalf - boundarySize) || fabs(diffCenterRobot_w.y()) > (sizeYHalf - boundarySize)) 
     {
         //robot touched boundary, move grid
         //we assume the robot keeps moving into the same direction
         diffCenterRobot_w *= 2.0 / 3.0;
-               
-        //TODO I don't like this, it may drift in respect to the frame node
-        mlsGrid->move(-diffCenterRobot_w.x() / mlsGrid->getScaleX(), -diffCenterRobot_w.y() / mlsGrid->getScaleY() );
+        
+        int moveX = diffCenterRobot_w.x() / mlsGrid->getScaleX();
+        int moveY = diffCenterRobot_w.y() / mlsGrid->getScaleY();
+        
+        mlsGrid->move(-moveX, -moveY);
 
         Eigen::Affine3d newTransform(Eigen::Affine3d::Identity());
-        Vector3d newGridPos = diffCenterRobot_w + mlsGridPos->getTransform().translation();
-        //we need to preserve Z as teh move operation does not change Z values
-        newGridPos.z() = gridCenter_w.z();
+        
+        Vector3d newGridPos = mlsGridPos->getTransform().translation() + Vector3d(moveX * mlsGrid->getScaleX(), moveY * mlsGrid->getScaleY(), 0);
         newTransform.pretranslate(newGridPos);
         mlsGridPos->setTransform(newTransform);
 
