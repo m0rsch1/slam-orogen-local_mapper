@@ -164,7 +164,7 @@ bool MapGenerator::moveMapIfRobotNearBoundary(const Eigen::Vector3d& robotPositi
         lastHeight = robotPosition_world.z();
         
         Eigen::Affine3d newTransform(Eigen::Affine3d::Identity());
-        newTransform.pretranslate(robotPosition_world);
+        newTransform.pretranslate(Eigen::Vector3d(robotPosition_world.x(), robotPosition_world.y(), 0));
         mlsGridPos->setTransform(newTransform);
         return true;
     }
