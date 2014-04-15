@@ -11,7 +11,7 @@ using namespace envire;
 
 
 MapGenerator::MapGenerator(double size, double resolution)
-    : scaleFactor( 1.0 )
+    : scaleFactor( 1.0 ), mapHeight(0.0)
 {
     lastHeight = 0.0;
     heightToGround = 0.0;
@@ -20,6 +20,10 @@ MapGenerator::MapGenerator(double size, double resolution)
     std::cout << "Gridcells is " << gridCells << " size is " << size << " res is " << resolution << " map owon size " << mlsGrid->getSizeX() << std::endl;
     mlsGrid->getConfig().updateModel = MLSConfiguration::SLOPE;
     mlsGridPos = new FrameNode();
+    Eigen::Affine3d newTransform(Eigen::Affine3d::Identity());
+    newTransform.pretranslate(Eigen::Vector3d(0,0,mapHeight));
+    mlsGridPos->setTransform(newTransform);
+    
     projOp = new MLSProjection();
     projOp->useUncertainty( false );
     
@@ -164,7 +168,7 @@ bool MapGenerator::moveMapIfRobotNearBoundary(const Eigen::Vector3d& robotPositi
         lastHeight = robotPosition_world.z();
         
         Eigen::Affine3d newTransform(Eigen::Affine3d::Identity());
-        newTransform.pretranslate(Eigen::Vector3d(robotPosition_world.x(), robotPosition_world.y(), 0));
+        newTransform.pretranslate(Eigen::Vector3d(robotPosition_world.x(), robotPosition_world.y(), mapHeight));
         mlsGridPos->setTransform(newTransform);
         return true;
     }
@@ -191,6 +195,7 @@ bool MapGenerator::moveMapIfRobotNearBoundary(const Eigen::Vector3d& robotPositi
         Eigen::Affine3d newTransform(Eigen::Affine3d::Identity());
         
         Vector3d newGridPos = mlsGridPos->getTransform().translation() + Vector3d(moveX * mlsGrid->getScaleX(), moveY * mlsGrid->getScaleY(), 0);
+        newGridPos.z() = mapHeight;
         newTransform.pretranslate(newGridPos);
         mlsGridPos->setTransform(newTransform);
 
@@ -220,6 +225,9 @@ void MapGenerator::clearMap()
 {
     lastHeight = 0.0;
     mlsGridPos->setTransform(Eigen::Affine3d::Identity());
+    Eigen::Affine3d newTransform(Eigen::Affine3d::Identity());
+    newTransform.pretranslate(Eigen::Vector3d(0,0,mapHeight));
+    mlsGridPos->setTransform(newTransform);
     mlsGrid->clear();
 }
 

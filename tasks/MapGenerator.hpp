@@ -87,6 +87,7 @@ private:
 
     envire::EnvironmentItem::Ptr projOpStore;
     
+    double mapHeight;
     double boundarySize;
     double mapSize;
     double lastHeight;
