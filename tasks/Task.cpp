@@ -215,11 +215,19 @@ bool Task::configureHook()
     robotAngleTrigger = _robot_angle_change_trigger.get();
     robotDistanceTrigger = _robot_translation_trigger.get();
     scanAngleTrigger = _scan_angle_change_trigger.get();
+
+    if (_map_update_model.get() != envire::MLSConfiguration::SLOPE 
+        && _map_update_model.get() != envire::MLSConfiguration::SUM 
+        && _map_update_model.get() != envire::MLSConfiguration::KALMAN )
+    {
+        RTT::log(RTT::Error) << "Wrong update model of the map. It should be SLOPE, SUM or KALMAN." << RTT::endlog();
+        return false;
+    }    
     
     if(mapGenerator)
         delete mapGenerator;
     
-    mapGenerator = new MapGenerator(mapSize, mapResolution);
+    mapGenerator = new MapGenerator(mapSize, mapResolution, _map_update_model.get());
     mapGenerator->setBoundarySize(boundarySize);
     mapGenerator->setHistoryScaling(_history_scale_factor.get());
     

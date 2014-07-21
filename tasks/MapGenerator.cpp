@@ -10,7 +10,7 @@ using namespace Eigen;
 using namespace envire;
 
 
-MapGenerator::MapGenerator(double size, double resolution)
+MapGenerator::MapGenerator(double size, double resolution, envire::MLSConfiguration::update_model map_update_model)
     : scaleFactor( 1.0 ), mapHeight(0.0)
 {
     lastHeight = 0.0;
@@ -18,7 +18,7 @@ MapGenerator::MapGenerator(double size, double resolution)
     size_t gridCells = ceil(size / resolution);
     mlsGrid = new MLSGrid(gridCells, gridCells, resolution, resolution, -size/2.0 , -size/2.0);
     std::cout << "Gridcells is " << gridCells << " size is " << size << " res is " << resolution << " map owon size " << mlsGrid->getSizeX() << std::endl;
-    mlsGrid->getConfig().updateModel = MLSConfiguration::SLOPE;
+    mlsGrid->getConfig().updateModel = map_update_model;
     mlsGridPos = new FrameNode();
     Eigen::Affine3d newTransform(Eigen::Affine3d::Identity());
     newTransform.pretranslate(Eigen::Vector3d(0,0,mapHeight));

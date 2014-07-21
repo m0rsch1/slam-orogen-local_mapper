@@ -10,7 +10,8 @@
 class MapGenerator
 {
 public:
-    MapGenerator(double size, double resolution);
+    MapGenerator(double size, double resolution, 
+        envire::MLSConfiguration::update_model map_update_model = envire::MLSConfiguration::SLOPE);
     ~MapGenerator();
     
     /** Sets the distance between the body frame and the ground. It

@@ -5,6 +5,7 @@ using_library 'envire'
 import_types_from "base"
 import_types_from "envire"
 import_types_from "velodyne_lidar/MultilevelLaserScan.h"
+import_types_from "envire/maps/MLSConfiguration.hpp"
 
 task_context "Task" do
     needs_configuration
@@ -50,6 +51,9 @@ task_context "Task" do
         doc 'The size of the boundary of the map. If the Robot enters the boundary the map will be moved'
     property('map_resolution', 'double', 0.1).
         doc 'The size of each grid cell'
+
+    property('map_update_model', 'envire::MLSConfiguration::update_model', :SLOPE).
+        doc 'The update model of mls map: KALMAN, SUM, SLOPE'        
 
     property('history_scale_factor', 'double', 1.0).
         doc 'Scale factor between 1.0 and 0.0 of how much old values are valued.'
