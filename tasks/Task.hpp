@@ -67,6 +67,7 @@ namespace local_mapper {
 
 
         MapGenerator *mapGenerator;
+        virtual bool dropMap();
     public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 

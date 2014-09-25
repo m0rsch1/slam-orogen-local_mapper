@@ -248,6 +248,14 @@ bool Task::startHook()
 
     return true;
 }
+
+bool Task::dropMap()
+{
+    mapGenerator->clearMap();
+    gotNewMap = true;
+    return true;
+}
+
 void Task::updateHook()
 {
     TaskBase::updateHook();

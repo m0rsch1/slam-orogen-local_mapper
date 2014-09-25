@@ -33,6 +33,8 @@ task_context "Task" do
         argument('offset', 'double', 'offset in height between the pose and the rectange height').
     returns('bool')
 
+    operation('dropMap').
+        returns('bool')
     transformer do
 	transformation("body_center", "odometry")
 	transformation("laser", "body_center")
