@@ -35,6 +35,13 @@ task_context "Task" do
 
     operation('dropMap').
         returns('bool')
+
+
+    operation('setNewMap').
+        argument('map', 'std/vector</envire/BinaryEvent>', 'new map').
+        argument('newMap2Odometry', 'base/samples/RigidBodyState', 'Transformation of the new map to the odometry coordinate frame').
+    returns('bool')
+
     transformer do
 	transformation("body_center", "odometry")
 	transformation("laser", "body_center")

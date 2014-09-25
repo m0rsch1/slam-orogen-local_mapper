@@ -249,6 +249,29 @@ bool Task::startHook()
     return true;
 }
 
+
+bool Task::setNewMap(const std::vector< envire::BinaryEvent >& map, const base::samples::RigidBodyState& newMap2Odometry)
+{
+    envire::Environment env;
+    env.applyEvents(map);
+    
+    std::vector<envire::MLSGrid*> mls_maps = env.getItems<envire::MLSGrid>();
+    if(!mls_maps.size()) {
+        RTT::log(RTT::Warning) << "Environment does not contain any MLS grids" << RTT::endlog();
+        return false;
+    }
+
+    if(mls_maps.size() != 1) {
+        RTT::log(RTT::Warning) << "Environment does contain to much MLS grids (should be only one)" << RTT::endlog();
+        return false;
+    }
+
+    mapGenerator->clearMap();
+    mapGenerator->addKnowMap(mls_maps.front(), newMap2Odometry.getTransform());
+    gotNewMap = true;
+    return true;
+}
+
 bool Task::dropMap()
 {
     mapGenerator->clearMap();
