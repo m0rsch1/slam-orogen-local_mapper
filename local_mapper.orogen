@@ -38,7 +38,7 @@ task_context "Task" do
 
 
     operation('setNewMap').
-        argument('map', 'std/vector</envire/BinaryEvent>', 'new map').
+        argument('map', "/RTT/extras/ReadOnlyPointer</std/vector</envire/BinaryEvent>>", 'new map').
         argument('newMap2Odometry', 'base/samples/RigidBodyState', 'Transformation of the new map to the odometry coordinate frame').
     returns('bool')
 

@@ -250,10 +250,10 @@ bool Task::startHook()
 }
 
 
-bool Task::setNewMap(const std::vector< envire::BinaryEvent >& map, const base::samples::RigidBodyState& newMap2Odometry)
+bool Task::setNewMap(const RTT::extras::ReadOnlyPointer< std::vector< envire::BinaryEvent > >& map, const base::samples::RigidBodyState& newMap2Odometry)
 {
     envire::Environment env;
-    env.applyEvents(map);
+    env.applyEvents(*(map.get()));
     
     std::vector<envire::MLSGrid*> mls_maps = env.getItems<envire::MLSGrid>();
     if(!mls_maps.size()) {
