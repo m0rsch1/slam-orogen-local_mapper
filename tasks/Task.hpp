@@ -51,6 +51,8 @@ namespace local_mapper {
 
         virtual void velodyne_scansTransformerCallback(const base::Time &ts, const ::velodyne_lidar::MultilevelLaserScan &velodyne_scans_sample);
 
+        virtual void pointcloud_samplesTransformerCallback(const base::Time &ts, const ::base::samples::Pointcloud &pointcloud_samples_sample);
+
         ///Last transformation from body to odometry
         Eigen::Affine3d curBodyCenter2Odo;
         Eigen::Affine3d lastBodyCenter2Odo;

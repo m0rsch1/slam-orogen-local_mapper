@@ -10,6 +10,10 @@ import_types_from "envire/maps/MLSConfiguration.hpp"
 task_context "Task" do
     needs_configuration
 
+    input_port("pointcloud_samples", "base/samples/Pointcloud").
+	needs_reliable_connection.
+        doc "Arbitrary 3d points in respect to the laser frame"
+
     input_port("scan_samples", "base/samples/LaserScan").
 	needs_reliable_connection.
         doc "LaserScann of front Scanner"
@@ -50,7 +54,7 @@ task_context "Task" do
 	align_port('scan_samples', 0.025)
 	align_port('scan_samples_back', 0.025)
 	align_port('velodyne_scans', 0.08)
-
+	align_port('pointcloud_samples', 0.2)
 	max_latency(0.1)
     end
 

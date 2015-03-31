@@ -91,6 +91,37 @@ bool Task::markRectInMap(double width, double height, ::base::samples::RigidBody
     return true;
 }
 
+void Task::pointcloud_samplesTransformerCallback(const base::Time &ts, const ::base::samples::Pointcloud &pointcloud_samples)
+{
+    lastScanTime = ts;
+    Eigen::Affine3d laser2bodyCenter,bodyCenter2Odo;
+    if(!_laser2body_center.get(ts, laser2bodyCenter, true)) {
+        RTT::log(RTT::Info) << "Interpolated transformation laser2body_center not available" << RTT::endlog();
+        return;
+    }
+    if(!_body_center2odometry.get(ts, bodyCenter2Odo, true)) {
+        RTT::log(RTT::Info) << "Interpolated transformation body_center2odometry not available" << RTT::endlog();
+        return;
+    }
+    curBodyCenter2Odo = bodyCenter2Odo;
+
+    if(mapGenerator->moveMapIfRobotNearBoundary(bodyCenter2Odo.translation()))
+        RTT::log(RTT::Info) << "pointcloud_samplesTransformerCallback: Local map has been moved, robot has reached the boundary" << RTT::endlog();
+    if(!mapGenerator->getZCorrection(bodyCenter2Odo))
+        std::cout << "Warning, could not get Z Correction " << std::endl;
+
+    // transform 3d points into the frame of the imu
+    const Affine3d laser2Odometry(bodyCenter2Odo * laser2bodyCenter);
+    std::vector<Eigen::Vector3d> points;
+    points.reserve(pointcloud_samples.points.size());
+    std::vector<base::Point>::const_iterator point_iter =  pointcloud_samples.points.begin();
+    for(;point_iter != pointcloud_samples.points.begin();++point_iter)
+        points.push_back(laser2Odometry*(*point_iter));
+
+    // add 3d points
+    mapGenerator->addPointVector(points);
+}
+
 void Task::scan_samplesTransformerCallback(const base::Time &ts, const ::base::samples::LaserScan &scan_samples_sample)
 {
     frontInput.addLaserScan(ts, scan_samples_sample);
