@@ -115,7 +115,7 @@ void Task::pointcloud_samplesTransformerCallback(const base::Time &ts, const ::b
     std::vector<Eigen::Vector3d> points;
     points.reserve(pointcloud_samples.points.size());
     std::vector<base::Point>::const_iterator point_iter =  pointcloud_samples.points.begin();
-    for(;point_iter != pointcloud_samples.points.begin();++point_iter)
+    for(;point_iter != pointcloud_samples.points.end();++point_iter)
         points.push_back(laser2Odometry*(*point_iter));
 
     // add 3d points
