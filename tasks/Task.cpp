@@ -3,7 +3,7 @@
 #include "Task.hpp"
 #include <velodyne_lidar/pointcloudConvertHelper.hpp>
 #include <envire/maps/MLSGrid.hpp>
-#include <orocos/envire/Orocos.hpp>
+#include <envire/Orocos.hpp>
 
 
 using namespace local_mapper;
